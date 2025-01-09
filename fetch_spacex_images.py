@@ -1,6 +1,6 @@
 import argparse
 
-from main import download_files, get_spacex_launch_image
+from fetch_all_space_images import download_files, get_spacex_launch_image
 
 
 parser = argparse.ArgumentParser(description='Download photos from the SpaceX launch')

@@ -1,6 +1,6 @@
 import argparse
 
-from main import download_files, get_nasa_apod
+from fetch_all_space_images import download_files, get_nasa_apod
 
 
 parser = argparse.ArgumentParser(description='Download images from the NASA APOD')

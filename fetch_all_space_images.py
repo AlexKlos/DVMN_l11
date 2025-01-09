@@ -144,9 +144,17 @@ def get_nasa_epic() -> list:
 
 def main():
     id = input('SpaceX launch ID: ')
+    if id == '':
+        id = 'latest'
     print('SpaceX - ', download_files(get_spacex_launch_image(id), folder='images'))
-    count = int(input('NASA APOD count: '))
+
+    count = input('NASA APOD count: ')
+    if count == '':
+        count = 1
+    else:
+        count = int(count)
     print('APOD - ', download_files(get_nasa_apod(count), filename='nasa_apod'))
+
     print('EPIC - ', download_files(get_nasa_epic(), 'images', 'nasa_epic'))
 
 
