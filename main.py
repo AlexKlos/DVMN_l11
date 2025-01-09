@@ -39,15 +39,19 @@ def download_file(url: str, filename: str, folder: str) -> bool:
         return False
     
 
-def fetch_spacex_last_launch() -> bool:
-    '''Downloads and saves photos from the last SpaceX launch
+def fetch_spacex_launch_image(launch_id: str = 'latest') -> bool:
+    '''Downloads and saves photos from the SpaceX launch
+    
+    Args:
+        launch_id (str): ID of the launch. If the value is not passed, 
+            photos of the last launch will be downloaded.
 
     Returns:
-        bool: Returns True if the files has been successfully downloaded and saved, 
-            otherwise False.
+        bool: Returns True if the files has been successfully 
+            downloaded and saved, otherwise False.
     '''
     try:
-        response = requests.get('https://api.spacexdata.com/v5/launches/latest')
+        response = requests.get(f'https://api.spacexdata.com/v5/launches/{launch_id}')
         response.raise_for_status()
         urls = response.json()['links']['flickr']['original']
     
@@ -64,7 +68,7 @@ def get_nasa_apod(count: int) -> bool:
     '''Downloads and saves photos from the NASA APOD
 
     Args:
-        count (int): Number of random photos to download from the APOD collection
+        count (int): Number of random photos to download from the APOD collection.
 
     Returns:
         bool: Returns True if the files has been successfully downloaded and saved, 
@@ -81,8 +85,8 @@ def get_nasa_apod(count: int) -> bool:
         response = requests.get('https://api.nasa.gov/planetary/apod', params=params)
         response.raise_for_status()
     
-        for i, picture_data in enumerate(response.json()):
-            url = picture_data['hdurl']
+        for i, image_data in enumerate(response.json()):
+            url = image_data['hdurl']
             extension = get_extension_from_url(url)
             download_file(url, f'nasa_apod_{i}.{extension}', 'images')
         return True
@@ -142,7 +146,7 @@ def get_extension_from_url(url: str) -> str:
     
 
 def main():
-    print('SpaceX - ', fetch_spacex_last_launch())
+    print('SpaceX - ', fetch_spacex_launch_image('5eb87d42ffd86e000604b384'))
     print('APOD - ', get_nasa_apod(5))
     print('EPIC - ', get_nasa_epic())
 
