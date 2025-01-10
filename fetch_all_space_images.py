@@ -8,17 +8,23 @@ import requests
 
 
 def download_files(urls: list, folder: str = 'images', filename: str = 'space') -> bool:
-    '''Downloads the files at the specified URLs and saves it in the specified location.
+    """Downloads the files at the specified URLs and saves them in the specified location.
     
     Args:
-        urls (list): Link to the file.
-        folder (str): Folder for save.
-        filename (str): Filename for save.
+        urls (list): List of file URLs to download.
+        folder (str, optional): Folder to save the files. Defaults to 'images'.
+        filename (str, optional): Base filename for saving files. Defaults to 'space'.
 
     Returns:
-        bool: Returns True if the files has been successfully downloaded and saved, 
-            otherwise False.
-    '''
+        bool: True if all files were successfully downloaded, otherwise False.
+
+    Raises:
+        requests.exceptions.RequestException: If a network error occurs.
+    """
+    if not urls:
+        print('No urls for dowload!')
+        return False
+    
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
@@ -38,8 +44,7 @@ def download_files(urls: list, folder: str = 'images', filename: str = 'space') 
 
         return True
     except Exception as e:
-        print(f'Ошибка скачивания: {e}')
-        
+        print(f'Error: {e}')
         return False
     
 
@@ -47,7 +52,7 @@ def get_extension_from_url(url: str) -> str:
     '''Parses the file extension from the download link
 
     Args:
-        url (str): Download link
+        url (str): Download link.
 
     Returns:
         str: Returns extension.
@@ -61,101 +66,121 @@ def get_extension_from_url(url: str) -> str:
 
 
 def get_spacex_launch_image(launch_id: str = 'latest') -> list:
-    '''Get urls of photos from the SpaceX launch
+    """Gets urls of photos from the SpaceX launch.
     
     Args:
-        launch_id (str): ID of the launch. If the value is not passed, 
-            photos of the last launch will be downloaded.
+        launch_id (str, optional): ID of the launch. Defaults to 'latest'.
 
     Returns:
-        list: Returns List of urls to dowload images.
-    '''
+        list: List of urls to download images.
+
+    Raises:
+        requests.exceptions.RequestException: If a network error occurs.
+    """
     try:
         response = requests.get(f'https://api.spacexdata.com/v5/launches/{launch_id}')
         response.raise_for_status()
         urls = response.json()['links']['flickr']['original']
+        if not urls:
+            print('No images found for this iaunch.')
+            return []
+        
+        return urls
     except Exception as e:
-        print(f'Ошибка скачивания: {e}')
-
-    return urls
+        print(f'Error: {e}')
+        return []
     
 
 def get_nasa_apod(count: int) -> list:
-    '''Get urls of photos from the NASA APOD
+    """Gets urls of photos from the NASA APOD.
 
     Args:
-        count (int): Number of random photos to get links from the APOD collection.
+        count (int): Number of random photos to fetch from the APOD collection.
 
     Returns:
-        list: Returns List of urls to dowload images.
-    '''
-    load_dotenv()
-    NASA_API_KEY = os.environ['NASA_API_KEY']
-    params = {
-        'count': count,
-        'api_key': NASA_API_KEY
-    }
-    urls = []
+        list: List of urls to download images.
 
+    Raises:
+        requests.exceptions.RequestException: If a network error occurs.
+    """
     try:
+        load_dotenv()
+        NASA_API_KEY = os.environ['NASA_API_KEY']
+        params = {
+            'count': count,
+            'api_key': NASA_API_KEY
+        }
+        urls = []
+
         response = requests.get('https://api.nasa.gov/planetary/apod', params=params)
         response.raise_for_status()
     
-        for i, image_data in enumerate(response.json()):
+        for image_data in response.json():
             url = image_data['hdurl']
             urls.append(url)
-    except Exception as e:
-        print(f'Ошибка скачивания: {e}')
 
-    return urls
+        return urls
+    except Exception as e:
+        print(f'Error: {e}')
+        return []
     
 
 def get_nasa_epic() -> list:
-    '''Get urls of photos from the NASA EPIC
+    """Gets urls of photos from the NASA EPIC.
 
     Returns:
-        list: Returns List of urls to dowload images.
-    '''
-    load_dotenv()
-    NASA_API_KEY = os.environ['NASA_API_KEY']
-    params = {
-        'api_key': NASA_API_KEY
-    }
-    urls = []
+        list: List of urls to download images.
 
+    Raises:
+        requests.exceptions.RequestException: If a network error occurs.
+    """
     try:
+        load_dotenv()
+        NASA_API_KEY = os.environ['NASA_API_KEY']
+        params = {'api_key': NASA_API_KEY}
+        
         response = requests.get('https://api.nasa.gov/EPIC/api/natural/images', params=params)
         response.raise_for_status()
     
-        for i, image_data in enumerate(response.json()):
+        urls = []
+        for image_data in response.json():
             image_name = image_data['image']
             image_date = image_data['date']
             image_parsed_date = datetime.strptime(image_date, '%Y-%m-%d %H:%M:%S')
             image_year = image_parsed_date.year
             image_month = str(image_parsed_date.month).zfill(2)
             image_day = str(image_parsed_date.day).zfill(2)
-            url = f'https://epic.gsfc.nasa.gov/archive/natural/{image_year}/{image_month}/{image_day}/png/{image_name}.png'
-            urls.append(url)
-    except Exception as e:
-        print(f'Ошибка скачивания: {e}')
+            urls.append(f'https://epic.gsfc.nasa.gov/archive/natural/{image_year}/{image_month}/{image_day}/png/{image_name}.png')
 
-    return urls
+        return urls
+    except Exception as e:
+        print(f'Error: {e}')
+        return []
     
 
 def main():
-    id = input('SpaceX launch ID: ')
-    if id == '':
-        id = 'latest'
-    print('SpaceX - ', download_files(get_spacex_launch_image(id), folder='images'))
-
-    count = input('NASA APOD count: ')
-    if count == '':
-        count = 1
+    launch_id = input('SpaceX launch ID (default: latest): ')
+    if launch_id == '':
+        launch_id = 'latest'
+    if download_files(get_spacex_launch_image(launch_id), folder='images'):
+        print('SpaceX launch images downloaded correctly')
     else:
-        count = int(count)
-    print('APOD - ', download_files(get_nasa_apod(count), filename='nasa_apod'))
+        print('SpaceX launch images downloaded not correctly')
 
-    print('EPIC - ', download_files(get_nasa_epic(), 'images', 'nasa_epic'))
+    try:
+        count = int(input('NASA APOD count: ') or 1)
+    except Exception as e:
+        print(f'Error: {e}')
+        count = 1
+    if download_files(get_nasa_apod(count), filename='nasa_apod'):
+        print('NASA APOD images downloaded correctly')
+    else:
+        print('NASA APOD images downloaded not correctly')
+
+    if download_files(get_nasa_epic(), 'images', 'nasa_epic'):
+        print('NASA EPIC images downloaded correctly')
+    else:
+        print('NASA EPIC images downloaded not correctly')
 
 
 if __name__ == '__main__':

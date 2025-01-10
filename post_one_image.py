@@ -5,7 +5,7 @@ import random
 from dotenv import load_dotenv
 import telegram
 
-from telegram_bot import get_file_list
+from post_all_images import get_file_list
 
 
 def main():
