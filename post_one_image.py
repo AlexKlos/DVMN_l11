@@ -35,8 +35,13 @@ def main():
     
         with open(file, 'rb') as image:
             bot.send_photo(chat_id, photo=image)
+            
+    except FileNotFoundError as e:
+        print(f"Error: {e}")
+    except telegram.error.TelegramError as e:
+        print(f"Telegram error: {e}")
     except Exception as e:
-        print(f'Error: {e}')
+        print(f"An unexpected error occurred: {e}")
 
 
 if __name__ == '__main__':

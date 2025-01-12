@@ -43,8 +43,11 @@ def download_files(urls: list, folder: str = 'images', filename: str = 'space') 
                 file.write(response.content)
 
         return True
+    except requests.exceptions.RequestException as e:
+        print(f"Network error: {e}")
+        return False
     except Exception as e:
-        print(f'Error: {e}')
+        print(f"Error: {e}")
         return False
     
 
@@ -86,8 +89,8 @@ def get_spacex_launch_image(launch_id: str = 'latest') -> list:
             return []
         
         return urls
-    except Exception as e:
-        print(f'Error: {e}')
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching SpaceX launch images: {e}")
         return []
     
 
@@ -120,8 +123,11 @@ def get_nasa_apod(count: int) -> list:
             urls.append(url)
 
         return urls
-    except Exception as e:
-        print(f'Error: {e}')
+    except KeyError as e:
+        print(f"Missing key in NASA APOD response: {e}")
+        return []
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching NASA APOD images: {e}")
         return []
     
 
@@ -153,8 +159,8 @@ def get_nasa_epic() -> list:
             urls.append(f'https://epic.gsfc.nasa.gov/archive/natural/{image_year}/{image_month}/{image_day}/png/{image_name}.png')
 
         return urls
-    except Exception as e:
-        print(f'Error: {e}')
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching NASA EPIC images: {e}")
         return []
     
 

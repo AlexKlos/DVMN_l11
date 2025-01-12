@@ -27,8 +27,11 @@ def get_file_list(folder: str = 'images') -> list:
                 path = os.path.join(curent_folder, file)
                 paths.append(path)
         return paths
-    except Exception as e:
-        print(f'Error: {e}')
+    except FileNotFoundError as e:
+        print(f"Error: The folder '{folder}' was not found. {e}")
+        return []
+    except PermissionError as e:
+        print(f"Error: Insufficient permissions to access the folder '{folder}' or its contents. {e}")
         return []
 
 
@@ -64,8 +67,12 @@ def post_images_from_folder(bot: telegram.Bot,
             with open(file, 'rb') as image:
                 bot.send_photo(chat_id, photo=image)
             time.sleep(pause)
-        except Exception as e:
-            print(f'Error: {e}')
+        except FileNotFoundError:
+            print(f"Error: File '{file}' not found.")
+        except telegram.error.TelegramError as e:
+            print(f"Telegram error while sending '{file}': {e}")
+        except OSError as e:
+            print(f"OS error while accessing '{file}': {e}")
             return False
     return True
 
