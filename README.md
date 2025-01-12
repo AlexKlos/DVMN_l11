@@ -58,13 +58,6 @@ If you don't have API keys or chat ID, you can use [**this inctruction**](#how-t
   python fetch_nasa_epic_images.py
   ```
 
-- **Fetch SpaceX Launch, NASA APOD & EPIC Images at ones**:
-  ```
-  python fetch_all_space_images.py
-  ```
-  You will be prompted to provide additional inputs:
-  - **SpaceX launch ID**: Leave blank to download the latest launch images.
-  - **NASA APOD count**: Enter the number of random images you want to download from NASA APOD. Leave blank to download 1 image by default.
 ### Post Images
 
 - **Post Image to Telegram**:
@@ -84,7 +77,7 @@ If you don't have API keys or chat ID, you can use [**this inctruction**](#how-t
 ```
 Space-Telegram/
 ├── images/                     # Folder containing the images
-├── fetch_all_space_images.py   # Script for downloading images (manual input is required)
+├── file_utils.py               # Module containing auxiliary functions
 ├── fetch_spacex_images.py      # Script to fetch SpaceX launch images
 ├── fetch_nasa_apod_images.py   # Script to fetch NASA APOD images
 ├── fetch_nasa_epic_images.py   # Script to fetch NASA EPIC images
