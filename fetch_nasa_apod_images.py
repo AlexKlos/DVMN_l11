@@ -1,8 +1,49 @@
 import argparse
+import os
 
-from fetch_all_space_images import download_files, get_nasa_apod
+from dotenv import load_dotenv
+import requests
+
+from file_utils import download_files
 
 
+def get_nasa_apod(count: int) -> list:
+    """Gets urls of photos from the NASA APOD.
+
+    Args:
+        count (int): Number of random photos to fetch from the APOD collection.
+
+    Returns:
+        list: List of urls to download images.
+
+    Raises:
+        requests.exceptions.RequestException: If a network error occurs.
+    """
+    try:
+        load_dotenv()
+        nasa_api_key = os.environ['NASA_API_KEY']
+        params = {
+            'count': count,
+            'api_key': nasa_api_key
+        }
+        urls = []
+
+        response = requests.get('https://api.nasa.gov/planetary/apod', params=params)
+        response.raise_for_status()
+    
+        for image_data in response.json():
+            url = image_data['hdurl']
+            urls.append(url)
+
+        return urls
+    except KeyError as e:
+        print(f"Missing key in NASA APOD response: {e}")
+        return []
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching NASA APOD images: {e}")
+        return []
+
+ 
 def main():
     """Main function to download images from NASA APOD.
 
