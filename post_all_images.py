@@ -21,12 +21,12 @@ def get_file_list(folder: str = 'images') -> list:
         PermissionError: If there is insufficient permission to access the folder or its files.
     '''
     try:
-        pathes = []
+        paths = []
         for curent_folder, folders, files in os.walk(folder):
             for file in files:
                 path = os.path.join(curent_folder, file)
-                pathes.append(path)
-        return pathes
+                paths.append(path)
+        return paths
     except Exception as e:
         print(f'Error: {e}')
         return []
@@ -58,7 +58,7 @@ def post_images_from_folder(bot: telegram.Bot,
     '''
     files = get_file_list(folder)
     if shuffle:
-        random.shuffle(files)
+        shuffle_list(files)
     for file in files:
         try:
             with open(file, 'rb') as image:
@@ -68,6 +68,18 @@ def post_images_from_folder(bot: telegram.Bot,
             print(f'Error: {e}')
             return False
     return True
+
+
+def shuffle_list(list: list) -> list:
+    '''Shuffles rndomly elements in list
+
+    Args:
+        list (list): List of objects
+
+    Returns:
+       list: List of shuffled elements
+    '''
+    return random.shuffle(list)
 
 
 def main():
