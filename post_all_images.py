@@ -85,13 +85,13 @@ def shuffle_list(list: list) -> list:
 def main():
     load_dotenv()
     bot = telegram.Bot(token=os.environ['TELEGRAM_API_TOKEN'])
-    CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
-    PAUSE = int(os.environ.get('PAUSE_BETWEEN_POSTS', 14400))
+    chat_id = os.environ['TELEGRAM_CHAT_ID']
+    pause = int(os.environ.get('PAUSE_BETWEEN_POSTS', 14400))
     folder = 'images'
 
     shuffle = False
     while True:
-        print(post_images_from_folder(bot, CHAT_ID, folder, PAUSE, shuffle))
+        print(post_images_from_folder(bot, chat_id, folder, pause, shuffle))
         shuffle = True
 
 

@@ -21,7 +21,7 @@ def main():
     try:
         load_dotenv()
         bot = telegram.Bot(token=os.environ['TELEGRAM_API_TOKEN'])
-        CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
+        chat_id = os.environ['TELEGRAM_CHAT_ID']
     
         parser = argparse.ArgumentParser(description='Post one image to telegram')
         parser.add_argument('file', type=str, nargs='?', help='filename')
@@ -34,7 +34,7 @@ def main():
             file = random.choice(get_file_list(folder))
     
         with open(file, 'rb') as image:
-            bot.send_photo(CHAT_ID, photo=image)
+            bot.send_photo(chat_id, photo=image)
     except Exception as e:
         print(f'Error: {e}')
 

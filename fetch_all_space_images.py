@@ -105,10 +105,10 @@ def get_nasa_apod(count: int) -> list:
     """
     try:
         load_dotenv()
-        NASA_API_KEY = os.environ['NASA_API_KEY']
+        nasa_api_key = os.environ['NASA_API_KEY']
         params = {
             'count': count,
-            'api_key': NASA_API_KEY
+            'api_key': nasa_api_key
         }
         urls = []
 
@@ -136,8 +136,8 @@ def get_nasa_epic() -> list:
     """
     try:
         load_dotenv()
-        NASA_API_KEY = os.environ['NASA_API_KEY']
-        params = {'api_key': NASA_API_KEY}
+        nasa_api_key = os.environ['NASA_API_KEY']
+        params = {'api_key': nasa_api_key}
         
         response = requests.get('https://api.nasa.gov/EPIC/api/natural/images', params=params)
         response.raise_for_status()
