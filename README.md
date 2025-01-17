@@ -89,6 +89,9 @@ Space-Telegram/
 └── README.md                   # Project documentation
 ```
 
+## Module Dependencies
+
+![Module Dependencies](module_dependencies.png)
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
