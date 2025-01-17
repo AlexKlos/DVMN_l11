@@ -40,8 +40,6 @@ def main():
         print(f"Error: {e}")
     except telegram.error.TelegramError as e:
         print(f"Telegram error: {e}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
 
 
 if __name__ == '__main__':

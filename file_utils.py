@@ -40,9 +40,6 @@ def download_files(urls: list, folder: str = 'images', filename: str = 'space') 
     except requests.exceptions.RequestException as e:
         print(f"Network error: {e}")
         return False
-    except Exception as e:
-        print(f"Error: {e}")
-        return False
     
 
 def get_extension_from_url(url: str) -> str:

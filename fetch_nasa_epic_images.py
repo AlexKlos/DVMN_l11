@@ -36,10 +36,6 @@ def main():
     """Main function to download images from NASA EPIC.
 
     Fetches the latest available images from the NASA EPIC API and saves them in the 'images' folder.
-
-    Raises:
-        requests.exceptions.RequestException: If a network error occurs during API calls.
-        Exception: For other unexpected errors.
     """
     load_dotenv()
     nasa_api_key = os.environ['NASA_API_KEY']

@@ -36,10 +36,6 @@ def main():
 
     Uses the SpaceX API to fetch photos from a specific launch 
     and saves them in the 'images' folder.
-
-    Raises:
-        requests.exceptions.RequestException: If a network error occurs during API calls.
-        Exception: For other unexpected errors.
     """
     parser = argparse.ArgumentParser(description='Download photos from the SpaceX launch')
     parser.add_argument(

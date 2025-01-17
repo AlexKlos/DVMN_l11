@@ -46,10 +46,6 @@ def main():
 
     Uses argparse to parse the command-line argument for the number of images to download.
     Downloads the specified number of images and saves them in the 'images' folder.
-
-    Raises:
-        requests.exceptions.RequestException: If a network error occurs during API calls.
-        Exception: For other unexpected errors.
     """
     load_dotenv()
     nasa_api_key = os.environ['NASA_API_KEY']
