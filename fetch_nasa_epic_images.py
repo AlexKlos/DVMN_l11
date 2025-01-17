@@ -19,17 +19,13 @@ def get_nasa_epic(nasa_api_key: str) -> list:
     Raises:
         requests.exceptions.RequestException: If a network error occurs.
     """
-    try:
-        params = {'api_key': nasa_api_key}
-        
-        response = requests.get('https://api.nasa.gov/EPIC/api/natural/images', params=params)
-        response.raise_for_status()
+    params = {'api_key': nasa_api_key}
     
-        urls = [f"https://epic.gsfc.nasa.gov/archive/natural/{datetime.strptime(image_data['date'], '%Y-%m-%d %H:%M:%S').year}/{str(datetime.strptime(image_data['date'], '%Y-%m-%d %H:%M:%S').month).zfill(2)}/{str(datetime.strptime(image_data['date'], '%Y-%m-%d %H:%M:%S').day).zfill(2)}/png/{image_data['image']}.png" for image_data in response.json()]
-        return urls
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching NASA EPIC images: {e}")
-        return []
+    response = requests.get('https://api.nasa.gov/EPIC/api/natural/images', params=params)
+    response.raise_for_status()
+
+    urls = [f"https://epic.gsfc.nasa.gov/archive/natural/{datetime.strptime(image_data['date'], '%Y-%m-%d %H:%M:%S').year}/{str(datetime.strptime(image_data['date'], '%Y-%m-%d %H:%M:%S').month).zfill(2)}/{str(datetime.strptime(image_data['date'], '%Y-%m-%d %H:%M:%S').day).zfill(2)}/png/{image_data['image']}.png" for image_data in response.json()]
+    return urls
    
 
 def main():
@@ -40,7 +36,10 @@ def main():
     load_dotenv()
     nasa_api_key = os.environ['NASA_API_KEY']
     
-    download_files(get_nasa_epic(nasa_api_key), 'images', 'nasa_epic')
+    try:
+        download_files(get_nasa_epic(nasa_api_key), 'images', 'nasa_epic')
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching NASA EPIC images: {e}")
 
 
 if __name__ == '__main__':

@@ -17,18 +17,14 @@ def get_spacex_launch_image(launch_id: str = 'latest') -> list:
     Raises:
         requests.exceptions.RequestException: If a network error occurs.
     """
-    try:
-        response = requests.get(f'https://api.spacexdata.com/v5/launches/{launch_id}')
-        response.raise_for_status()
-        urls = response.json()['links']['flickr']['original']
-        if not urls:
-            print('No images found for this iaunch.')
-            return []
-        
-        return urls
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching SpaceX launch images: {e}")
+    response = requests.get(f'https://api.spacexdata.com/v5/launches/{launch_id}')
+    response.raise_for_status()
+    urls = response.json()['links']['flickr']['original']
+    if not urls:
+        print('No images found for this iaunch.')
         return []
+        
+    return urls
 
 
 def main():
@@ -48,7 +44,10 @@ def main():
     args = parser.parse_args()
     id = args.id
     
-    download_files(get_spacex_launch_image(id), 'images', 'spacex')
+    try:
+        download_files(get_spacex_launch_image(id), 'images', 'spacex')
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching SpaceX launch images: {e}")
 
 
 if __name__ == '__main__':

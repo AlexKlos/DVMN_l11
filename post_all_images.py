@@ -15,20 +15,9 @@ def get_file_list(folder: str = 'images') -> list:
     Returns:
         list: A list of full file paths for all files in the folder and its subfolders. 
               Returns an empty list if an error occurs.
-
-    Raises:
-        FileNotFoundError: If the specified folder does not exist.
-        PermissionError: If there is insufficient permission to access the folder or its files.
     '''
-    try:
-        paths = [os.path.join(curent_folder, file) for curent_folder, folders, files in os.walk(folder) for file in files]
-        return paths
-    except FileNotFoundError as e:
-        print(f"Error: The folder '{folder}' was not found. {e}")
-        return []
-    except PermissionError as e:
-        print(f"Error: Insufficient permissions to access the folder '{folder}' or its contents. {e}")
-        return []
+    paths = [os.path.join(curent_folder, file) for curent_folder, folders, files in os.walk(folder) for file in files]
+    return paths
 
 
 def post_images_from_folder(bot: telegram.Bot, 
@@ -49,27 +38,14 @@ def post_images_from_folder(bot: telegram.Bot,
 
     Returns:
         bool: True if all images are successfully read and posted, otherwise False.
-
-    Raises:
-        FileNotFoundError: If the specified folder does not exist.
-        telegram.error.TelegramError: If there is an error sending a photo via Telegram.
-        OSError: If there is an issue reading a file from the folder.
     '''
     files = get_file_list(folder)
     if shuffle:
         shuffle_list(files)
     for file in files:
-        try:
-            with open(file, 'rb') as image:
-                bot.send_photo(chat_id, photo=image)
-            time.sleep(pause)
-        except FileNotFoundError:
-            print(f"Error: File '{file}' not found.")
-        except telegram.error.TelegramError as e:
-            print(f"Telegram error while sending '{file}': {e}")
-        except OSError as e:
-            print(f"OS error while accessing '{file}': {e}")
-            return False
+        with open(file, 'rb') as image:
+            bot.send_photo(chat_id, photo=image)
+        time.sleep(pause)
     return True
 
 
@@ -94,8 +70,17 @@ def main():
 
     shuffle = False
     while True:
-        print(post_images_from_folder(bot, chat_id, folder, pause, shuffle))
-        shuffle = True
+        try:
+            print(post_images_from_folder(bot, chat_id, folder, pause, shuffle))
+            shuffle = True
+        except FileNotFoundError as e:
+            print(f"Error: The folder '{folder}' was not found. {e}")
+        except PermissionError as e:
+            print(f"Error: Insufficient permissions to access the folder '{folder}' or its contents. {e}")
+        except telegram.error.TelegramError as e:
+            print(f"Telegram error while sending file: {e}")
+        except OSError as e:
+            print(f"OS error while accessing file: {e}")
 
 
 if __name__ == '__main__':

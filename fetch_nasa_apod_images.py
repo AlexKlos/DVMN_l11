@@ -21,24 +21,15 @@ def get_nasa_apod(count: int, nasa_api_key: str) -> list:
     Raises:
         requests.exceptions.RequestException: If a network error occurs.
     """
-    try:
-        params = {
-            'count': count,
-            'api_key': nasa_api_key
-        }
+    params = {
+        'count': count,
+        'api_key': nasa_api_key
+    }
+    response = requests.get('https://api.nasa.gov/planetary/apod', params=params)
+    response.raise_for_status()
 
-        response = requests.get('https://api.nasa.gov/planetary/apod', params=params)
-        response.raise_for_status()
-    
-        urls = [image_data['hdurl'] for image_data in response.json()]
-
-        return urls
-    except KeyError as e:
-        print(f"Missing key in NASA APOD response: {e}")
-        return []
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching NASA APOD images: {e}")
-        return []
+    urls = [image_data['hdurl'] for image_data in response.json()]
+    return urls
 
  
 def main():
@@ -59,7 +50,14 @@ def main():
     args = parser.parse_args()
     count = args.count
     
-    download_files(get_nasa_apod(count, nasa_api_key), 'images', 'nasa_apod')
+    try:
+        download_files(get_nasa_apod(count, nasa_api_key), 'images', 'nasa_apod')
+    except KeyError as e:
+        print(f"Missing key in NASA APOD response: {e}")
+        return []
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching NASA APOD images: {e}")
+        return []
 
 
 if __name__ == '__main__':
