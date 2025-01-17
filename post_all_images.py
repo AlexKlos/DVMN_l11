@@ -71,7 +71,7 @@ def main():
     shuffle = False
     while True:
         try:
-            print(post_images_from_folder(bot, chat_id, folder, pause, shuffle))
+            post_images_from_folder(bot, chat_id, folder, pause, shuffle)
             shuffle = True
         except FileNotFoundError as e:
             print(f"Error: The folder '{folder}' was not found. {e}")
