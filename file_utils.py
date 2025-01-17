@@ -25,9 +25,9 @@ def download_files(urls: list, folder: str = 'images', filename: str = 'space') 
     
     try:
         os.makedirs(folder, exist_ok=True)
-        for i, url in enumerate(urls):
+        for index, url in enumerate(urls):
             extension = get_extension_from_url(url)
-            assembled_filename = f'{filename}_{i}{extension}'
+            assembled_filename = f'{filename}_{index}{extension}'
             filepath = os.path.join(folder, assembled_filename)
     
             response = requests.get(url, headers=headers)
