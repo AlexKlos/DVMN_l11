@@ -7,8 +7,11 @@ import requests
 from file_utils import download_files
 
 
-def get_nasa_epic() -> list:
+def get_nasa_epic(nasa_api_key: str) -> list:
     """Gets urls of photos from the NASA EPIC.
+
+    Args:
+        nasa_api_key (str): NASA API key.
 
     Returns:
         list: List of urls to download images.
@@ -17,8 +20,6 @@ def get_nasa_epic() -> list:
         requests.exceptions.RequestException: If a network error occurs.
     """
     try:
-        load_dotenv()
-        nasa_api_key = os.environ['NASA_API_KEY']
         params = {'api_key': nasa_api_key}
         
         response = requests.get('https://api.nasa.gov/EPIC/api/natural/images', params=params)
@@ -49,7 +50,10 @@ def main():
         requests.exceptions.RequestException: If a network error occurs during API calls.
         Exception: For other unexpected errors.
     """
-    download_files(get_nasa_epic(), 'images', 'nasa_epic')
+    load_dotenv()
+    nasa_api_key = os.environ['NASA_API_KEY']
+    
+    download_files(get_nasa_epic(nasa_api_key), 'images', 'nasa_epic')
 
 
 if __name__ == '__main__':

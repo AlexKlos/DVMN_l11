@@ -7,11 +7,12 @@ import requests
 from file_utils import download_files
 
 
-def get_nasa_apod(count: int) -> list:
+def get_nasa_apod(count: int, nasa_api_key: str) -> list:
     """Gets urls of photos from the NASA APOD.
 
     Args:
         count (int): Number of random photos to fetch from the APOD collection.
+        nasa_api_key (str): NASA API key.
 
     Returns:
         list: List of urls to download images.
@@ -20,8 +21,6 @@ def get_nasa_apod(count: int) -> list:
         requests.exceptions.RequestException: If a network error occurs.
     """
     try:
-        load_dotenv()
-        nasa_api_key = os.environ['NASA_API_KEY']
         params = {
             'count': count,
             'api_key': nasa_api_key
@@ -54,6 +53,9 @@ def main():
         requests.exceptions.RequestException: If a network error occurs during API calls.
         Exception: For other unexpected errors.
     """
+    load_dotenv()
+    nasa_api_key = os.environ['NASA_API_KEY']
+    
     parser = argparse.ArgumentParser(description='Download images from the NASA APOD')
     parser.add_argument('count', 
                         type=int, 
@@ -63,7 +65,7 @@ def main():
     args = parser.parse_args()
     count = args.count
     
-    download_files(get_nasa_apod(count), 'images', 'nasa_apod')
+    download_files(get_nasa_apod(count, nasa_api_key), 'images', 'nasa_apod')
 
 
 if __name__ == '__main__':
