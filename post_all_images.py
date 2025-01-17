@@ -23,8 +23,7 @@ def get_file_list(folder: str = 'images') -> list:
 def post_images_from_folder(bot: telegram.Bot, 
                             chat_id: str, 
                             folder: str, 
-                            pause: int, 
-                            shuffle: bool=False) -> bool:
+                            pause: int) -> bool:
     '''Posts all images from folder to a Telegram chat.
 
     Args:
@@ -32,33 +31,17 @@ def post_images_from_folder(bot: telegram.Bot,
         chat_id (str): ID of the chat where images will be posted.
         folder (str): Path to the folder containing images.
         pause (int): Pause between posts in seconds.
-        shuffle (bool, optional): Determines the order of image posting. 
-            If False, images are posted in order; 
-            if True, the order is randomized. Defaults to False.
 
     Returns:
         bool: True if all images are successfully read and posted, otherwise False.
     '''
     files = get_file_list(folder)
-    if shuffle:
-        shuffle_list(files)
+
     for file in files:
         with open(file, 'rb') as image:
             bot.send_photo(chat_id, photo=image)
         time.sleep(pause)
     return True
-
-
-def shuffle_list(list: list) -> list:
-    '''Shuffles rndomly elements in list
-
-    Args:
-        list (list): List of objects
-
-    Returns:
-       list: List of shuffled elements
-    '''
-    return random.shuffle(list)
 
 
 def main():
@@ -68,11 +51,10 @@ def main():
     pause = int(os.environ.get('PAUSE_BETWEEN_POSTS', 14400))
     folder = 'images'
 
-    shuffle = False
     while True:
         try:
-            post_images_from_folder(bot, chat_id, folder, pause, shuffle)
-            shuffle = True
+            post_images_from_folder(bot, chat_id, folder, pause)
+            random.shuffle(list)
         except FileNotFoundError as e:
             print(f"Error: The folder '{folder}' was not found. {e}")
         except PermissionError as e:
