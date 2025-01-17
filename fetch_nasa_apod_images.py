@@ -57,10 +57,11 @@ def main():
     parser = argparse.ArgumentParser(description='Download images from the NASA APOD')
     parser.add_argument('count', 
                         type=int, 
-                        nargs='?', 
+                        nargs='?',
+                        default=1,
                         help='Number of images to download (default: 1).')
     args = parser.parse_args()
-    count = args.count if args.count else 1
+    count = args.count
     
     download_files(get_nasa_apod(count), 'images', 'nasa_apod')
 

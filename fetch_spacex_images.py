@@ -45,11 +45,12 @@ def main():
     parser.add_argument(
         'id', 
         type=str, 
-        nargs='?', 
+        nargs='?',
+        default='latest',
         help='SpaceX launch ID (defaults to the latest launch if not specified)'
     )
     args = parser.parse_args()
-    id = args.id if args.id else 'latest'
+    id = args.id
     
     download_files(get_spacex_launch_image(id), 'images', 'spacex')
 
