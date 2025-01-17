@@ -11,7 +11,8 @@ def get_nasa_apod(count: int, nasa_api_key: str) -> list:
     """Gets urls of photos from the NASA APOD.
 
     Args:
-        count (int): Number of random photos to fetch from the APOD collection.
+        count (int, optional): Number of random photos to fetch from the APOD 
+        collection. Default to 1.
         nasa_api_key (str): NASA API key.
 
     Returns:
@@ -25,14 +26,11 @@ def get_nasa_apod(count: int, nasa_api_key: str) -> list:
             'count': count,
             'api_key': nasa_api_key
         }
-        urls = []
 
         response = requests.get('https://api.nasa.gov/planetary/apod', params=params)
         response.raise_for_status()
     
-        for image_data in response.json():
-            url = image_data['hdurl']
-            urls.append(url)
+        urls = [image_data['hdurl'] for image_data in response.json()]
 
         return urls
     except KeyError as e:

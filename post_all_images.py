@@ -21,11 +21,7 @@ def get_file_list(folder: str = 'images') -> list:
         PermissionError: If there is insufficient permission to access the folder or its files.
     '''
     try:
-        paths = []
-        for curent_folder, folders, files in os.walk(folder):
-            for file in files:
-                path = os.path.join(curent_folder, file)
-                paths.append(path)
+        paths = [os.path.join(curent_folder, file) for curent_folder, folders, files in os.walk(folder) for file in files]
         return paths
     except FileNotFoundError as e:
         print(f"Error: The folder '{folder}' was not found. {e}")

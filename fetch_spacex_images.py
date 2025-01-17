@@ -29,7 +29,7 @@ def get_spacex_launch_image(launch_id: str = 'latest') -> list:
     except requests.exceptions.RequestException as e:
         print(f"Error fetching SpaceX launch images: {e}")
         return []
-    
+
 
 def main():
     """Main function to download photos from a SpaceX launch.
