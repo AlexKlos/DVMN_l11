@@ -15,31 +15,23 @@ def download_files(urls: list, folder: str = 'images', filename: str = 'space') 
 
     Returns:
         bool: True if all files were successfully downloaded, otherwise False.
-
-    Raises:
-        requests.exceptions.RequestException: If a network error occurs.
     """
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
     
-    try:
-        os.makedirs(folder, exist_ok=True)
-        for index, url in enumerate(urls):
-            extension = get_extension_from_url(url)
-            assembled_filename = f'{filename}_{index}{extension}'
-            filepath = os.path.join(folder, assembled_filename)
-    
-            response = requests.get(url, headers=headers)
-            response.raise_for_status()
-    
-            with open(filepath, 'wb') as file:
-                file.write(response.content)
+    os.makedirs(folder, exist_ok=True)
+    for index, url in enumerate(urls):
+        extension = get_extension_from_url(url)
+        assembled_filename = f'{filename}_{index}{extension}'
+        filepath = os.path.join(folder, assembled_filename)
 
-        return True
-    except requests.exceptions.RequestException as e:
-        print(f"Network error: {e}")
-        return False
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+
+        with open(filepath, 'wb') as file:
+            file.write(response.content)
+    return True
     
 
 def get_extension_from_url(url: str) -> str:
